@@ -32,17 +32,6 @@ REPOSITORY_PATH="https://x-access-token:${PERSONAL_TOKEN}@github.com/${PRO_REPOS
 # deploy to 
 echo "Deploy to ${PRO_REPOSITORY}"
 
-cd $PUBLISH_DIR
-
-echo "Config git ..."
-
-# Configures Git.
-git init
-git config user.name "${GITHUB_ACTOR}"
-git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-git remote add origin "${REPOSITORY_PATH}"
-git pull
-
 # Directs the action to the the Github workspace.
 cd $GITHUB_WORKSPACE 
 
@@ -60,7 +49,16 @@ echo "copy CNAME if exists"
 if [ -n "${CNAME}" ]; then
     echo $CNAME > ${PUBLISH_DIR}/CNAME
 fi
+
 cd $PUBLISH_DIR
+
+echo "Config git ..."
+
+# Configures Git.
+git init
+git config user.name "${GITHUB_ACTOR}"
+git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+git remote add origin "${REPOSITORY_PATH}"
 
 # Checks to see if the remote exists prior to deploying.
 # If the branch doesn't exist it gets created here as an orphan.
@@ -78,6 +76,6 @@ echo 'Start Commit'
 git commit --allow-empty -m "Deploying to ${BRANCH}"
 
 echo 'Start Push'
-git push origin "${BRANCH}"
+git push origin "${BRANCH}" --force
 
 echo "Deployment succesful!"
